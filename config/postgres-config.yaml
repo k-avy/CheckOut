@@ -5,6 +5,6 @@ metadata:
   labels:
     app.kubernetes.io/name: checkout-postgres
 data:
-  POSTGRES_DB: billbook
+  POSTGRES_DB: postgres
   POSTGRES_USER: seller
   POSTGRES_PASSWORD: password

@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  DB_HOST: postgres-service.checkout.svc.cluster.local
+  DB_NAME: postgres
+  DB_PORT: "5432"
+  DB_USER: seller
+  DB_PASSWORD: password
+  SERVER_PORT: "8080"
+  RATE: "5"
+  REDIS_PORT: "6379"
+  REDIS_HOST: redis-service.checkout.svc.cluster.local
+kind: ConfigMap
+metadata:
+  name: checkout-config
+  namespace: checkout

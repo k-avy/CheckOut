@@ -16,25 +16,12 @@ spec:
       containers:
         - name: checkout
           image: ko://github.com/k-avy/CheckOut/cmd/checkout
-          args:
-            - "-host"
-            - "postgres-service.licensedb.svc.cluster.local"
-          #  - "-port"
-          #  - "-dbname"
-          #  - "-user"
-          #  - "-password"
-          #  - "-datafile"
-          #  - "-populatedb"
+          envFrom:
+            - configMapRef:
+                name: checkout-config
           resources:
             limits:
               memory: "128Mi"
               cpu: "500m"
           ports:
             - containerPort: 8080
-          volumeMounts:
-            - name: checkout-config-volume
-              mountPath: /config
-      volumes:
-        - name: checkout-config-volume
-          configMap:
-            name: checkout-config

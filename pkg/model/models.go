@@ -1,7 +1,7 @@
 package model
 
 type Order struct {
-	OrderId     int     `json:"order_id" gorm:"primary_key"`
+	OrderId     int     `json:"order_id" gorm:"primaryKey"`
 	Customer    string  `json:"customer"`
 	ProductName string  `json:"product_name"`
 	Quantity    int     `json:"quantity"`
@@ -24,7 +24,6 @@ type OrdersResponse struct {
 }
 
 type InputOrder struct {
-	OrderId     int     `json:"order_id" binding:"required"`
 	Customer    string  `json:"customer" binding:"required"`
 	ProductName string  `json:"product_name" binding:"required"`
 	Quantity    int     `json:"quantity" binding:"required"`
@@ -33,3 +32,7 @@ type InputOrder struct {
 	Priority    string  `json:"priority" binding:"required"`
 }
 
+type User struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}

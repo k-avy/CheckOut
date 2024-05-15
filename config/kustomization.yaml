@@ -1,14 +1,12 @@
 resources:
+  - "namespace.yaml"
   - "api.yaml"
-  - "postgres-configmap.yaml"
+  - "postgres-config.yaml"
   - "ps-deployment.yaml"
-  - "ps-service.yaml"
-  - "pv-postgres.yaml"
+  - "db-service.yaml"
+  - "pvc.yaml"
   - "service.yaml"
+  - "redis-deployment.yaml"
+  - "api-configmap.yaml"
 
-configMapGenerator:
-  - name: "checkout-config"
-    files:
-      - .env
-
-namespace: checkOut
+namespace: checkout

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  labels:
+    app.kubernetes.io/name: checkout-postgres
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+  selector:
+    app.kubernetes.io/name: checkout-postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  labels:
+    app.kubernetes.io/name: checkout-redis
+spec:
+  type: NodePort
+  ports:
+    - port: 6379
+  selector:
+    app.kubernetes.io/name: checkout-redis

@@ -11,13 +11,15 @@ import (
 )
 
 const (
-	defaultDbName     = "billbook"
+	defaultDbName     = "postgres"
 	defaultDbPort     = "5432"
 	defaultDbHost     = "localhost"
 	defaultDbPassword = "password"
-	defaultServerHost = "8080"
+	defaultServerPort = "8080"
 	defaultDbUser     = "seller"
-	defaultRate		  = 5
+	defaultRedishost  = "localhost"
+	defaultRedisPort  = "6379"
+	defaultRate       = 5
 )
 
 var (
@@ -26,61 +28,77 @@ var (
 	dbHost     string
 	dbPassword string
 	dbUser     string
-	serverHost string
-	rate 	   int
+	serverPort string
+	redisHost  string
+	redisPort  string
+	rate       int64
 )
 
-func main(){
-	dbname:= os.Getenv("DB_NAME")
-	if len(dbname)==0 {
-		dbname=defaultDbName
+func main() {
+	dbname := os.Getenv("DB_NAME")
+	if len(dbname) == 0 {
+		dbname = defaultDbName
 	}
-	dbName=dbname
-	dbport:= os.Getenv("DB_PORT")
-	if len(dbport)==0 {
-		dbport=defaultDbPort
-	}
-	dbPort=dbport
+	dbName = dbname
 
-	dbhost:= os.Getenv("DB_HOST")
-	if len(dbhost)==0 {
-		dbhost=defaultDbHost
+	dbport := os.Getenv("DB_PORT")
+	if len(dbport) == 0 {
+		dbport = defaultDbPort
 	}
-	dbHost=dbhost
+	dbPort = dbport
 
-	dbuser:= os.Getenv("DB_USER")
-	if len(dbuser)==0 {
-		dbuser=defaultDbUser
+	dbhost := os.Getenv("DB_HOST")
+	if len(dbhost) == 0 {
+		dbhost = defaultDbHost
 	}
-	dbUser=dbuser
+	dbHost = dbhost
 
-	dbpassword:= os.Getenv("DB_PASSWORD")
-	if len(dbpassword)==0 {
-		dbpassword=defaultDbPassword
+	dbuser := os.Getenv("DB_USER")
+	if len(dbuser) == 0 {
+		dbuser = defaultDbUser
 	}
-	dbPassword=dbpassword
+	dbUser = dbuser
 
-	serverhost:=os.Getenv("SERVER_HOST")
-	if len(serverhost)==0 {
-		serverhost=defaultServerHost
+	dbpassword := os.Getenv("DB_PASSWORD")
+	if len(dbpassword) == 0 {
+		dbpassword = defaultDbPassword
 	}
-	serverHost=serverhost
+	dbPassword = dbpassword
 
-	limitrate,_:=strconv.Atoi(os.Getenv("RATE"))
-	if limitrate==0 {
-		limitrate=defaultRate
+	serverport := os.Getenv("SERVER_PORT")
+	if len(serverport) == 0 {
+		serverport = defaultServerPort
 	}
-	rate=limitrate
-	
-	db.Connect(dbHost, dbPort, dbUser, dbName, dbPassword)
+	serverPort = serverport
 
-	if err := db.DB.AutoMigrate(&model.Order{}); err != nil {
+	limitrate, _ := strconv.Atoi(os.Getenv("RATE"))
+	if limitrate == 0 {
+		limitrate = defaultRate
+	}
+	rate = int64(limitrate)
+
+	redisport := os.Getenv("REDIS_PORT")
+	if len(redisport) == 0 {
+		redisport = defaultRedisPort
+	}
+	redisPort = redisport
+
+	redishost := os.Getenv("REDIS_HOST")
+	if len(redishost) == 0 {
+		redishost = defaultRedishost
+	}
+	redisHost = redishost
+
+	db.ConnectPG(dbHost, dbPort, dbUser, dbName, dbPassword)
+	db.ConnectRedis(redisHost, redisPort)
+
+	if err := db.DB.AutoMigrate(&model.Order{}, &model.User{}); err != nil {
 		log.Fatalf("Failed to automigrate database: %v", err)
 	}
 
-	r := apis.Router()
+	r := apis.Router(rate)
 
-	if err := r.Run(); err != nil {
+	if err := r.Run(":" + serverPort); err != nil {
 		log.Fatalf("Error while running the server: %v", err)
 	}
 }

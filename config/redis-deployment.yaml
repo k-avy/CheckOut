@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app.kubernetes.io/name: checkout-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: checkout-redis
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: checkout-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          env:
+            - name: REDIS_MAXMEMORY
+              value: "128Mi"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: "/data"
+              name: redis-data
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: redis-data-pvc
