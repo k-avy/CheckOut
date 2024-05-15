@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-secret
+  labels:
+    app.kubernetes.io/name: checkout-postgres
+data:
+  POSTGRES_DB: billbook
+  POSTGRES_USER: seller
+  POSTGRES_PASSWORD: password

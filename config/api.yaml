@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+  labels:
+    app.kubernetes.io/name: checkout
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: checkout
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: checkout
+    spec:
+      containers:
+        - name: checkout
+          image: ko://github.com/k-avy/CheckOut/cmd/checkout
+          args:
+            - "-host"
+            - "postgres-service.licensedb.svc.cluster.local"
+          #  - "-port"
+          #  - "-dbname"
+          #  - "-user"
+          #  - "-password"
+          #  - "-datafile"
+          #  - "-populatedb"
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: checkout-config-volume
+              mountPath: /config
+      volumes:
+        - name: checkout-config-volume
+          configMap:
+            name: checkout-config
